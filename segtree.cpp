@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <climits>
+#include <functional>
 
 using namespace std;
 
@@ -8,23 +9,17 @@ template<typename T>
 struct SegTree {
   int n;
   const T ID;
+  function<T(T,T)> operate; // operate(T a, T b)
+  function<T(T,T)> update; // update(T target, T val)
   vector<T> node;
   // 配列のサイズ, 単位元
-  SegTree(int sz, T _ID): ID(_ID) {
+  SegTree(int sz, T ID, function<T(T,T)> operate, function<T(T,T)> update)
+  : ID(ID), operate(operate), update(update) {
     n = 1;
     while (n < sz) n *= 2;
     node.resize(2*n - 1, ID);
   }
-  T operate(T a, T b) {
-    // 二項演算子をここに書く
-    return a + b;
-  }
-  T update(T target, T val) {
-    // set関数の時に呼び出される更新処理をここに書く
-    // 例: 加算したいとき: return target + val;
-    // 例: 値を書き換えたいとき: return val;
-    return target + val;
-  }
+
   T get(int tl, int tr, int k, int l, int r) {
     if (r <= tl || tr <= l) return ID;
     else if (tl <= l && r <= tr) return node[k];
@@ -51,7 +46,9 @@ void verifyRSQ()
 {
   int n, q;
   cin >> n >> q;
-  SegTree<int> st(n, 0);
+  auto operate = [](int a, int b) { return a + b; };
+  auto update = [](int target, int val) { return target + val; };
+  SegTree<int> st(n, 0, operate, update);
   for (int i = 0; i < q; i++) {
     int c, x, y;
     cin >> c >> x >> y;
@@ -70,7 +67,9 @@ void verifyRMQ()
   // Verify AOJ DSL_2_A - RMQ
   int n, q;
   cin >> n >> q;
-  SegTree<int> st(n, INT_MAX);
+  auto operate = [](int a, int b) { return min(a, b); };
+  auto update = [](int target, int val) { return val; };
+  SegTree<int> st(n, INT_MAX, operate, update);
   for (int i = 0; i < q; i++) {
     int c, x, y;
     cin >> c >> x >> y;
