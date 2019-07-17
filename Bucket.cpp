@@ -18,16 +18,21 @@ struct BucketDecomposition {
     /* バケットと生データの初期化をここに書く */
 
   }
+  // k番目のバケットを構成する
+  void makeBucket(int k) {
+    for (int i = k*B; i < (k+1)*B; i++) {
+      /* バケット更新のために情報を集める */
+
+    }
+  }
   void set(int idx, int x) {
     int k = idx / B;
     /* 生データに対する更新をここに書く */
 
     /* バケット更新前処理 */
 
-    for (int i = k*B; i < (k+1)*B; i++) {
-      /* バケット更新のために情報を集める */
+    makeBucket(k);
 
-    }
     /* バケット更新処理 */
 
   }
